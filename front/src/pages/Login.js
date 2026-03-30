@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'  // remove Link import
 import { useAuth } from '../context/AuthContext'
 import './Auth.css'
 
@@ -17,8 +17,12 @@ function Login() {
     setLoading(true)
 
     try {
-      await login(username, password)
-      navigate('/dashboard')
+      const userData = await login(username, password)
+      if (userData.roles && userData.roles.includes('ROLE_ADMIN')) {
+        navigate('/admin/dashboard')
+      } else {
+        navigate('/dashboard')
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.')
     } finally {
@@ -57,9 +61,7 @@ function Login() {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        <p className="auth-link">
-          Don't have an account? <Link to="/signup">Sign up</Link>
-        </p>
+        {/* Signup link removed — admin creates accounts from dashboard */}
       </div>
     </div>
   )

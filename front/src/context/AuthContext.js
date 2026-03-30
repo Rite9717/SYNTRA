@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
+    const storedUser = sessionStorage.getItem('user')
     if (storedUser) {
       setUser(JSON.parse(storedUser))
     }
@@ -18,8 +18,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     const response = await authService.login(username, password)
     setUser(response)
-    localStorage.setItem('user', JSON.stringify(response))
-    localStorage.setItem('token', response.token)
+    sessionStorage.setItem('user', JSON.stringify(response))
+    sessionStorage.setItem('token', response.token)
     return response
   }
 
@@ -29,8 +29,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+    sessionStorage.removeItem('user')
+    sessionStorage.removeItem('token')
   }
 
   if (loading) {

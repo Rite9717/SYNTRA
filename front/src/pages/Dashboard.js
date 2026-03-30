@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 import messageService from '../services/messageService'
 import './Dashboard.css'
@@ -7,10 +8,17 @@ import './Dashboard.css'
 function Dashboard() {
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const { user } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
+    // Redirect admin users to admin dashboard
+    if (user && user.roles && user.roles.includes('ROLE_ADMIN')) {
+      navigate('/admin/dashboard')
+      return
+    }
     loadUnreadCount()
-  }, [])
+  }, [user, navigate])
 
   const loadUnreadCount = async () => {
     try {

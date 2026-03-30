@@ -60,7 +60,12 @@ public class AuthService {
         );
     }
     
-    public String signup(SignupRequest signupRequest) {
+    public String signup(SignupRequest signupRequest)
+    {
+        if(!signupRequest.getEmail().endsWith("@msit.edu.in"))
+        {
+            throw new RuntimeException("Registration is only allowed with a college email address");
+        }
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             throw new RuntimeException("Username is already taken!");
         }
@@ -78,7 +83,7 @@ public class AuthService {
         user.setPhone(signupRequest.getPhone());
         
         Set<String> roles = new HashSet<>();
-        roles.add("ROLE_USER");
+        roles.add(signupRequest.getRole() != null ? signupRequest.getRole() : "ROLE_USER");
         user.setRoles(roles);
         
         userRepository.save(user);
