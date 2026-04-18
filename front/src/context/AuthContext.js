@@ -3,23 +3,43 @@ import authService from '../services/authService'
 
 const AuthContext = createContext(null)
 
+// Helper functions to get the appropriate storage
+const getStorage = (rememberMe) => rememberMe ? localStorage : sessionStorage
+
+const getStoredData = (key) => {
+  // Check localStorage first, then sessionStorage
+  return localStorage.getItem(key) || sessionStorage.getItem(key)
+}
+
+const clearAllStorage = () => {
+  // Clear from both storages
+  localStorage.removeItem('user')
+  localStorage.removeItem('token')
+  sessionStorage.removeItem('user')
+  sessionStorage.removeItem('token')
+}
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const storedUser = sessionStorage.getItem('user')
+    // Check both localStorage and sessionStorage for existing session
+    const storedUser = getStoredData('user')
     if (storedUser) {
       setUser(JSON.parse(storedUser))
     }
     setLoading(false)
   }, [])
 
-  const login = async (username, password) => {
+  const login = async (username, password, rememberMe = false) => {
     const response = await authService.login(username, password)
     setUser(response)
-    sessionStorage.setItem('user', JSON.stringify(response))
-    sessionStorage.setItem('token', response.token)
+    
+    const storage = getStorage(rememberMe)
+    storage.setItem('user', JSON.stringify(response))
+    storage.setItem('token', response.token)
+    
     return response
   }
 
@@ -29,8 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null)
-    sessionStorage.removeItem('user')
-    sessionStorage.removeItem('token')
+    clearAllStorage()
   }
 
   if (loading) {

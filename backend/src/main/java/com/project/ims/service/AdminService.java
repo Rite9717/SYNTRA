@@ -36,7 +36,9 @@ public class AdminService {
         return new AdminDashboardStats(totalUsers, activeUsers, totalMessages, messagesToday, unreadMessages);
     }
 
-    public List<UserManagementResponse> getAllUsers() {
+    public List<UserManagementResponse> getAllUsers()
+    {
+        System.out.println("Total users: " + userRepository.count());
         List<User> users = userRepository.findAll();
         return users.stream().map(this::convertToUserManagementResponse).collect(Collectors.toList());
     }

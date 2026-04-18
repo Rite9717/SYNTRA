@@ -32,8 +32,8 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${import.meta.env.REACT_APP_API_URL}/api/admin/users`, {
+      const token = sessionStorage.getItem('token');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -51,8 +51,8 @@ const UserManagement = () => {
 
   const toggleUserStatus = async (userId) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`${import.meta.env.REACT_APP_API_URL}/api/admin/users/${userId}/toggle-status`,
+      const token = sessionStorage.getItem('token');
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/admin/users/${userId}/toggle-status`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

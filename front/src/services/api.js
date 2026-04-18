@@ -9,9 +9,22 @@ const api = axios.create({
   }
 })
 
+// Helper to get token from either storage
+const getToken = () => {
+  return localStorage.getItem('token') || sessionStorage.getItem('token')
+}
+
+// Helper to clear all storage
+const clearAllStorage = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  sessionStorage.removeItem('token')
+  sessionStorage.removeItem('user')
+}
+
 api.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem('token')
+    const token = getToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -26,8 +39,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      sessionStorage.removeItem('token')
-      sessionStorage.removeItem('user')
+      clearAllStorage()
       window.location.href = '/login'
     }
     return Promise.reject(error)

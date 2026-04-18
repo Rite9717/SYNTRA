@@ -60,7 +60,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/api/test/signup").denyAll()
                 .requestMatchers("/ws/**").permitAll()
-                    .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/fix/**").permitAll()
+                .requestMatchers("/api/diagnostic/**").authenticated()
+                .requestMatchers("/api/admin/debug/**").authenticated()
+                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
             );
         

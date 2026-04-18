@@ -6,6 +6,7 @@ import './Auth.css'
 function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -17,7 +18,7 @@ function Login() {
     setLoading(true)
 
     try {
-      const userData = await login(username, password)
+      const userData = await login(username, password, rememberMe)
       if (userData.roles && userData.roles.includes('ROLE_ADMIN')) {
         navigate('/admin/dashboard')
       } else {
@@ -55,6 +56,19 @@ function Login() {
               required
               disabled={loading}
             />
+          </div>
+          <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              disabled={loading}
+              style={{ width: 'auto', margin: 0 }}
+            />
+            <label htmlFor="rememberMe" style={{ margin: 0, cursor: 'pointer' }}>
+              Remember me (keep me logged in)
+            </label>
           </div>
           {error && <div className="error">{error}</div>}
           <button type="submit" className="btn btn-primary" disabled={loading}>
