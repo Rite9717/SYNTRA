@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: syntra
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syntra-api
+  namespace: syntra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syntra-api
+  template:
+    metadata:
+      labels:
+        app: syntra-api
+    spec:
+      containers:
+        - name: api
+          image: syntra-api:1.0.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_URL
+              value: jdbc:mysql://mysql:3306/syntra?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+            - name: REDIS_HOST
+              value: redis
+            - name: KAFKA_BOOTSTRAP
+              value: kafka:9092
+            - name: AI_SERVICE_URL
+              value: http://syntra-ai:8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: syntra-api
+  namespace: syntra
+spec:
+  selector:
+    app: syntra-api
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syntra-ai
+  namespace: syntra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syntra-ai
+  template:
+    metadata:
+      labels:
+        app: syntra-ai
+    spec:
+      containers:
+        - name: ai
+          image: syntra-ai:1.0.0
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: syntra-ai
+  namespace: syntra
+spec:
+  selector:
+    app: syntra-ai
+  ports:
+    - port: 8000
+      targetPort: 8000

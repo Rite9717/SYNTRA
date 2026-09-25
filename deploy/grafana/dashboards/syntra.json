@@ -1,0 +1,25 @@
+{
+  "title": "SYNTRA",
+  "uid": "syntra",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Mail sent",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [{ "expr": "rate(syntra_mail_sent_total[1m])" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Chat sent",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [{ "expr": "rate(syntra_chat_sent_total[1m])" }]
+    },
+    {
+      "type": "stat",
+      "title": "Auth failures",
+      "gridPos": { "x": 0, "y": 8, "w": 8, "h": 6 },
+      "targets": [{ "expr": "syntra_auth_failures_total" }]
+    }
+  ]
+}
